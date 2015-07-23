@@ -20,7 +20,7 @@ h2 {
 	color: #333;
 }
 a {
-    color: lightsteelblue;
+    color: cadetblue;
 }
     
 </style>
@@ -29,14 +29,22 @@ a {
 <h1><font color="brown">Joe's Project Page for DGMD S-15</font></h1>
 
 <!--<h1><a href="https://gist.github.com/depasq/aa91922befd2e74c060b">People Page Card</a></h1>-->
-
+<h1>Musings</h1>
+7/23/15: The other night I was thinking about my interactive story project with just a pen and paper in hand. I found that I had a lot of ideas about how I wanted to create interactivity in the story and for the first time in my life, I was beginning to see in my mind how I might be able to achieve those ideas in code. It was a really cool experience to be able to translate an idea about how something should work into pseudo-code on paper. I haven't actually implemented those ideas yet, but the fact that the conceptualization is there is a good indicator that I'm learning something :) <br>
 <h1>Project Ideas</h1>
-<h2>1. A) The Supernova Simulator</h2>
+<h2>1. Interactive/Quick Image Editor for Image Creation Tutorial</h2>
+<p>I want to build more functionality into <a href="http://chandra.si.edu/photo/openFITS/">this set</a> of tutorials. I want to allow a user to do minimal image editing and combination to create RGB images from science data right in the browser.<br>
+    I found this great <a href="http://pixlr.com/editor/">website</a> which is basically photoshop in the browser which is completely open source and free and has an <a href="https://support.pixlr.com/hc/en-us/articles/202846694-The-Pixlr-API-embedding-Pixlr-web-applications-in-your-own-site">API</a> that I think could be adapted for use in my project.<br>
+    UPDATE: it <a href="http://chandra.si.edu/photo/openFITS/pixlr">works</a>!
+    </p>
+
+<h2>2. The Life Cycle of a Massive Star</h2>
 <p> The proof of concept start for the longer Cas A supernova story...<br>
 Allow the user to have interactive control over the core collapse of a star - click to burn heavier elements until you create a solid iron core. Then watch as the star explodes!<br>
-EDIT: It turns out something like this <a href="http://www.planetseed.com/laboratory/virtual-experiment-build-your-own-star">already exists</a> in Flash form. 
+EDIT: It turns out something like this <a href="http://www.planetseed.com/laboratory/virtual-experiment-build-your-own-star">already exists</a> in Flash form. <br><br>
+UPDATE: So...this project continues to evolve. It's becoming more of an interactive story than a "simulator" and I'm good with that. I found this <a href="http://www.clicktorelease.com/blog/how-to-make-clouds-with-css-3d">awesome tutorial</a> showing how you can build pseudo-3D, interactive clouds in the browser window. It struck me as something that could easily be adapted to represent a nebula in space, which is a good starting point for the discussion of the life cycle of a star. I figured out how to map new clouds into it, change the background, adjust the different interactive elements so that your viewing angle is slightly more limited, key other events off of the clouds z-depth, and also use the same clouds function to add individual stars that add to the sense of depth. The <a href="https://github.com/depasq/supernova">end result</a> is something really cool and I love the way it looks! Unfortunately, it's really computationally intensive and I'm still trying to figure out how to offload some of the animation work to the GPU. 
 </p>
-<h2>1. The Story of an X-ray Photon Created in the Cassiopeia A Supernova Explosion</h2>	
+<h2>3. The Story of an X-ray Photon Created in the Cassiopeia A Supernova Explosion</h2>	
 <p>
 The layout: I picture this being visual storytelling where as you scroll to read the text, different elements of the storycome into view and animate.
 Sometimes these stories have a video playing in the background, and that's how I see this starting if I can find or create a good animation of a supernova explosion.<br><br>
@@ -69,18 +77,14 @@ The overall idea: follow an X-ray photon from it's creation in a supernova explo
 
  A tangential educational possibility from this is to allow users to assign their own colors to the elements and make their own composite image.</p>
 
-<h2>2. Interactive/Quick Image Editor for Image Creation Tutorial</h2>
-<p>Building on that last point from above...I want to build more functionality into <a href="http://chandra.si.edu/photo/openFITS/">this set</a> of tutorials. I want to allow a user to do minimal image editing and combination to create RGB images from science data right in the browser.<br>
-    I found this great <a href="http://pixlr.com/editor/">website</a> which is basically photoshop in the browser which is completely open source and free and has an <a href="https://support.pixlr.com/hc/en-us/articles/202846694-The-Pixlr-API-embedding-Pixlr-web-applications-in-your-own-site">API</a> that I think could be adapted for use in my project.
-    </p>
 
-<h2>3. Do more with <a href="http://chandra.si.edu/photo/map/index.html">Chandra Sky Map</a>?</h2>
+<h2>4. Do more with <a href="http://chandra.si.edu/photo/map/index.html">Chandra Sky Map</a>?</h2>
     - I've wanted to add a multi-wavelength view of the sky similar to <a href="http://chromoscope.net/">Chromoscope</a> for a while.<br>
     - I also played around with adding interactive consteallation boundaries across the sky to this but ran into trouble with boundaries whose edges wrap around to the other side. I still haven't figured that bug out. <br>
 
-<h2>4. Fix up and finish <a href="https://smartx.cfa.harvard.edu/svc/joesvc6.html">Smart-X</a> analysis page</h2>
+<h2>5. Fix up and finish <a href="https://smartx.cfa.harvard.edu/svc/joesvc6.html">Smart-X</a> analysis page</h2>
 This page needs a LOT of help. I'm considering scrapping everything and starting over by first thoroughly thinking through the workflow and how the UI should fit into that.  
-<h2>5. Interactive data explorer for Chandra data files</h2>
+<h2>6. Interactive data explorer for Chandra data files</h2>
 I envision a way to interactively browse and work with Chandra data files directly in the browser. It's a longer term project with no real timeline on it. 
 
 <h1>Other Potential Goals</h1>
