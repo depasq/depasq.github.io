@@ -1,0 +1,107 @@
+<html>
+
+<head>
+    <style>
+    div {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-color: steelblue;
+        display: inline-block;
+        opacity: 0.5;
+        transition: 0.3s;
+    }
+    </style>
+</head>
+
+<body>
+    <script>
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight || e.clientHeight || g.clientHeight;
+
+    var getRandomColor = function() {
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+
+        return 'rgb(' + [red, green, blue].join(',') + ')';
+    }
+
+    function coinflip() {
+        var coinFlip_X = Math.random();
+        if (coinFlip_X > .5) {
+            return 1
+        } else {
+            return -1
+        }
+    }
+
+    var Circle = function(radius) {
+        var me = this;
+        var xflip = coinflip();
+        var yflip = coinflip();
+
+        this.xVelocity = Math.random() * 100 * xflip;
+        this.yVelocity = Math.random() * 100 * yflip;
+
+        this.div = document.createElement('div');
+        this.div.style.width = radius + 'px';
+        this.div.style.height = radius + 'px';
+        this.div.style.left = Math.random() * 75 + "%";
+        this.div.style.top = Math.random() * 75 + "%";
+        this.color = getRandomColor();
+        this.div.style.backgroundColor = this.color;
+        document.body.appendChild(this.div);
+
+        // this.div.addEventListener('mousedown', function(myEvent){
+        //  me.div.style.backgroundColor = 'green';
+        // });
+        // this.div.addEventListener('mouseup', function(myEvent){
+        //  me.div.style.backgroundColor = me.color;
+        // });
+
+        return this;
+    }
+
+    var myCircles = [];
+    for (var i = 0; i < 50; i = i + 1) {
+        myCircles.push(new Circle(Math.random() * 200));
+    }
+
+    setInterval(function() {
+        myCircles.forEach(function(circle) {
+            var top = window.getComputedStyle(circle.div).top;
+            var left = window.getComputedStyle(circle.div).left;
+
+            var width = parseFloat(window.getComputedStyle(circle.div).width);
+            var height = parseFloat(window.getComputedStyle(circle.div).height);
+
+            var newTop = parseFloat(top) + circle.yVelocity + 'px';
+            var newLeft = parseFloat(left) + circle.xVelocity + 'px';
+
+            if (parseFloat(newTop) <= 0 || parseFloat(newTop) >= y-height) {
+                circle.yVelocity = circle.yVelocity*-1;
+            }
+            if (parseFloat(newLeft) <= 0 || parseFloat(newLeft) >= x-width) {
+                circle.xVelocity = circle.xVelocity*-1;
+            }
+
+
+            circle.div.style.left = newLeft;
+            circle.div.style.top = newTop;
+            //size = Math.random() * 200 + 'px';
+            // circle.div.style.width = size;
+            // circle.div.style.height = size;
+            //circle.div.style.backgroundColor=getRandomColor();
+
+        });
+    }, 100);
+    </script>
+</body>
+
+</html>
