@@ -1,110 +1,132 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Joe's Project Page for DGMD S-15</title>
+  <title>Joe's Project Page for DGMD S-15</title>
 
-<link href="http://fonts.googleapis.com/css?family=Halant:300" rel='stylesheet' type='text/css'>
-<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel='stylesheet' type='text/css'>
-<style>
+  <link href="http://fonts.googleapis.com/css?family=Halant:300" rel='stylesheet' type='text/css'>
+  <link href="http://fonts.googleapis.com/css?family=Inconsolata" rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
 
-body {
-    font-family: sans-serif;
-}
+    h1 {
+      font-family: 'Halant', serif;
+      color: steelblue;
+    }
 
-h1 {
-	font-family: 'Halant', serif;
-    color: steelblue;
-}
-h2 {
-	font-family: 'Inconsolata';
-	color: #333;
-}
-a {
-    color: cadetblue;
-}
-    
-</style>
-</head>   
+    h2 {
+      font-family: 'Inconsolata';
+      color: #333;
+    }
+
+    a {
+      color: cadetblue;
+    }
+  </style>
+</head>
+
 <body>
-<h1><font color="brown">Joe's Project Page for DGMD S-15</font></h1>
+  <h1>
+    <font color="brown">Joe's Project Page for DGMD S-15</font>
+  </h1>
 
-<!--<h1><a href="https://gist.github.com/depasq/aa91922befd2e74c060b">People Page Card</a></h1>-->
-<h1>Musings</h1>
-7/23/15: The other night I was thinking about my interactive story project with just a pen and paper in hand. I found that I had a lot of ideas about how I wanted to create interactivity in the story and for the first time in my life, I was beginning to see in my mind how I might be able to achieve those ideas in code. It was a really cool experience to be able to translate an idea about how something should work into pseudo-code on paper. I haven't actually implemented those ideas yet, but the fact that the conceptualization is there is a good indicator that I'm learning something :) <br>
-7/24/15: It's amazing how many "cool tutorials" exist out there! There are so many hidden gems just waiting to be discovered and adapted to different uses.<br>Also, I just want to say how much I love git right now. I honestly feel silly for having put off learning how to use it for so long. 
-7/24/15 (12:36pm): This is perhaps one of the most amazing things I've ever seen: <a href="http://cabbi.bo/enough/">http://cabbi.bo/enough/</a> It came up as I was searching for 3D spheres, which led to webGL stuff and three.js. This story is linked from the <a href="http://threejs.org/">three.js</a> site. <br>
-7/28/15: Holy crap! I forgot about <a href="http://stars.chromeexperiments.com/">this</a>! It turns out it was done with three js and the stars in it are incredible! Thankfully, there's a <a href="http://www.html5rocks.com/en/tutorials/casestudies/100000stars/">great writeup</a> about how it was done...yet another source of inspiration! <br>
+  <!--<h1><a href="https://gist.github.com/depasq/aa91922befd2e74c060b">People Page Card</a></h1>-->
+  <h1>Musings</h1>
+  7/23/15: The other night I was thinking about my interactive story project with just a pen and paper in hand. I found that I had a lot of ideas about how I wanted to create interactivity in the story and for the first time in my life, I was beginning
+  to see in my mind how I might be able to achieve those ideas in code. It was a really cool experience to be able to translate an idea about how something should work into pseudo-code on paper. I haven't actually implemented those ideas yet, but the
+  fact that the conceptualization is there is a good indicator that I'm learning something :)
+  <br> 7/24/15: It's amazing how many "cool tutorials" exist out there! There are so many hidden gems just waiting to be discovered and adapted to different uses.
+  <br>Also, I just want to say how much I love git right now. I honestly feel silly for having put off learning how to use it for so long. 7/24/15 (12:36pm): This is perhaps one of the most amazing things I've ever seen: <a href="http://cabbi.bo/enough/">http://cabbi.bo/enough/</a>  It came up as I was searching for 3D spheres, which led to webGL stuff and three.js. This story is linked from the <a href="http://threejs.org/">three.js</a> site.
+  <br> 7/28/15: Holy crap! I forgot about <a href="http://stars.chromeexperiments.com/">this</a>! It turns out it was done with three js and the stars in it are incredible! Thankfully, there's a <a href="http://www.html5rocks.com/en/tutorials/casestudies/100000stars/">great writeup</a>  about how it was done...yet another source of inspiration!
+  <br>
 
-<hr>
-<h1>Project Ideas</h1>
-<h2>1. Interactive/Quick Image Editor for Image Creation Tutorial</h2>
-<p>I want to build more functionality into <a href="http://chandra.si.edu/photo/openFITS/">this set</a> of tutorials. I want to allow a user to do minimal image editing and combination to create RGB images from science data right in the browser.<br>
-    I found this great <a href="http://pixlr.com/editor/">website</a> -- basically photoshop in the browser -- which is completely open source and has an <a href="https://support.pixlr.com/hc/en-us/articles/202846694-The-Pixlr-API-embedding-Pixlr-web-applications-in-your-own-site">API</a> that I think could be adapted for use in my project.<br>
-    UPDATE: it <a href="http://chandra.si.edu/photo/openFITS/pixlr">works</a>!
-    </p>
-<hr width=75%>
-<h2>2. The Life Cycle of a Massive Star</h2>
-<p> The proof of concept start for the longer Cas A supernova story...<br>
-Allow the user to have interactive control over the core collapse of a star - click to burn heavier elements until you create a solid iron core. Then watch as the star explodes!<br>
-EDIT: It turns out something like this <a href="http://www.planetseed.com/laboratory/virtual-experiment-build-your-own-star">already exists</a> in Flash form. <br><br>
-UPDATE: So...this project continues to evolve. It's becoming more of an interactive story than a "simulator" and I'm good with that. I found this <a href="http://www.clicktorelease.com/blog/how-to-make-clouds-with-css-3d">awesome tutorial</a> showing how you can build pseudo-3D, interactive clouds in the browser window. It struck me as something that could easily be adapted to represent a nebula in space, which is a good starting point for the discussion of the life cycle of a star. I figured out how to map new clouds into it, change the background, adjust the different interactive elements so that your viewing angle is slightly more limited, key other events off of the clouds z-depth, and also use the same clouds function to add individual stars that add to the sense of depth. The <a href="https://github.com/depasq/supernova">end result</a> is something really cool and I love the way it looks! Unfortunately, it's really computationally intensive and I'm still trying to figure out how to offload some of the animation work to the GPU.  UPDATE: now using webGL via three.js for everything and it's working nicely! <br>
-For the next few sections of the story, I'd like to continue with the 3D interactivity we have going on with the nebula. I found another <a href="http://learnsome.co/blog/spheres/">cool tutorial</a> detailing how you can create animated 3D spheres using CSS and JS. At the end of the tutorial, there's a 3D sphere with a surface image mapped onto it. I think this technique could be used to map a stellar surface onto a sphere and have it slowly rotating as the story progresses.  <br>
-I may have stumbled upon a solution to the performance issue with the nebula page. I'm experimenting with doing the 3D star in three.js and I think I can use <a href="http://stemkoski.github.io/Three.js/Sprites.html">this tutorial</a> to rewrite the first page using three.js for the animation instead of CSS and divs. That should give a big performance boost to the page. YES! It worked. <br>
-Back to the Star page...Using <a href="http://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js">another tutorial</a> for inspriation, I'm looking at using this to either zoom into the core of star and watch hydrogen burning run out and/or use a scaled up version to simulate the explosion of the star.  
-</p>
-<hr width=75%>
+  <hr>
+  <h1>Project Ideas</h1>
+  <h2>1. Interactive/Quick Image Editor for Image Creation Tutorial</h2>
+  <p>I want to build more functionality into <a href="http://chandra.si.edu/photo/openFITS/">this set</a> of tutorials. I want to allow a user to do minimal image editing and combination to create RGB images from science data right in the browser.
+    <br> I found this great <a href="http://pixlr.com/editor/">website</a> -- basically photoshop in the browser -- which is completely open source and has an <a href="https://support.pixlr.com/hc/en-us/articles/202846694-The-Pixlr-API-embedding-Pixlr-web-applications-in-your-own-site">API</a>    that I think could be adapted for use in my project.
+    <br> UPDATE: it <a href="http://chandra.si.edu/photo/openFITS/pixlr">works</a>!
+  </p>
+  <hr width=75%>
+  <h2>2. The Life Cycle of a Massive Star</h2>
+  <p> The proof of concept start for the longer Cas A supernova story...
+    <br> Allow the user to have interactive control over the core collapse of a star - click to burn heavier elements until you create a solid iron core. Then watch as the star explodes!
+    <br> EDIT: It turns out something like this <a href="http://www.planetseed.com/laboratory/virtual-experiment-build-your-own-star">already exists</a> in Flash form.
+    <br>
+    <br> UPDATE: So...this project continues to evolve. It's becoming more of an interactive story than a "simulator" and I'm good with that. I found this <a href="http://www.clicktorelease.com/blog/how-to-make-clouds-with-css-3d">awesome tutorial</a> showing
+    how you can build pseudo-3D, interactive clouds in the browser window. It struck me as something that could easily be adapted to represent a nebula in space, which is a good starting point for the discussion of the life cycle of a star. I figured
+    out how to map new clouds into it, change the background, adjust the different interactive elements so that your viewing angle is slightly more limited, key other events off of the clouds z-depth, and also use the same clouds function to add individual
+    stars that add to the sense of depth. The <a href="https://github.com/depasq/supernova">end result</a> is something really cool and I love the way it looks! Unfortunately, it's really computationally intensive and I'm still trying to figure out how
+    to offload some of the animation work to the GPU. UPDATE: now using webGL via three.js for everything and it's working nicely!
+    <br> For the next few sections of the story, I'd like to continue with the 3D interactivity we have going on with the nebula. I found another <a href="http://learnsome.co/blog/spheres/">cool tutorial</a> detailing how you can create animated 3D spheres
+    using CSS and JS. At the end of the tutorial, there's a 3D sphere with a surface image mapped onto it. I think this technique could be used to map a stellar surface onto a sphere and have it slowly rotating as the story progresses.
+    <br> I may have stumbled upon a solution to the performance issue with the nebula page. I'm experimenting with doing the 3D star in three.js and I think I can use <a href="http://stemkoski.github.io/Three.js/Sprites.html">this tutorial</a> to rewrite
+    the first page using three.js for the animation instead of CSS and divs. That should give a big performance boost to the page. YES! It worked.
+    <br> Back to the Star page...Using <a href="http://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js">another tutorial</a> for inspriation, I'm looking at using this to either zoom into the core of star and watch hydrogen burning
+    run out and/or use a scaled up version to simulate the explosion of the star.
+  </p>
+  <hr width=75%>
 
-<h2>3. The Story of an X-ray Photon Created in the Cassiopeia A Supernova Explosion</h2>	
-<p>
-The layout: I picture this being visual storytelling where as you scroll to read the text, different elements of the storycome into view and animate.
-Sometimes these stories have a video playing in the background, and that's how I see this starting if I can find or create a good animation of a supernova explosion.<br><br>
+  <h2>3. The Story of an X-ray Photon Created in the Cassiopeia A Supernova Explosion</h2>
+  <p>
+    The layout: I picture this being visual storytelling where as you scroll to read the text, different elements of the storycome into view and animate. Sometimes these stories have a video playing in the background, and that's how I see this starting if
+    I can find or create a good animation of a supernova explosion.
+    <br>
+    <br> The overall idea: follow an X-ray photon from it's creation in a supernova explosion as it travels through space and reaches Chandra's detectors. From there, learn how astronomers create color images through a visualization showing how an X-ray image
+    builds up over the course of an observation, ultimately showing how we use the energy information of the photons to build color images.
+    <br>
+    <ul list-style-type="circle">
+      <li> Open with an animation of a supernova explosion
+        <br>
+      </li>
+      - text will explain what's happening when the star explodes, and how it's seeding the surrounding medium with heavier elements. Perhaps add an interactive spectrum filter that allows the user to visualize the explosion in different light.
+      <br> - possible hook for interactivity would be to allow the user to control the explosion! (i.e. click here to blow up the star...)
+      <br> - more thoughts on this part: could explain the process of core collapse through interactivity. Stars collapse because they use up their fuel and the outward radiation pressure in their core can no longer withstand the inward pull of gravity. They
+      start out burning hydrogen into helium and when the supply of hydrogen runs out, they shrink a bit, and get hotter and start burning heavier elements. The user could click a few times (burning up all the hydrogen) to keep the star from collapsing,
+      click a few more times to burn through other elements until the point where clicking can no longer support the star and it collapses triggering the supernova...then the animation picks up.
+      <br>
+      <li> Follow a single x-ray photon from the explosion site as it travels through space at the speed of light </li>
+      - lots of room here for inserting cool facts about the speed of light, wave-particle duality, relativity
+      <br> - some facts about the photon itself - it's energy, element?
+      <br>
+      <li> The photon encounters Chandra and we watch as it enters the aperture, bounces off of the primary and secondary mirrors and makes its way to the focal plane, striking and registering an x-ray photon in the detector </li>
+      -the animation at this point is driven by the user scrolling, if they scroll back up, it plays in reverse, etc.
+      <br> - at this point we hold on a view looking down at the detector and speed up time and watch as more and more x-ray photons strike the detector and eventually we see an image building up over time (Cas A).
+      <br> - This is a very abstracted visualization of the way the telescope detector works so could take some liberties as to how best to visualize this in a concise and clear manner.
+      <br> - at the same time, we explain how each photon has an energy associated with it and show how we can make a plot of the number of photons vs energy to show how we can build up an x-ray spectrum from the image. As each photon strikes the detector
+      to build up the image, the plot updates to show another data point. Eventually the plot will be the X-ray spectrum of Cas A.
+      <br> - do we plot the spectrum? or just use color to indicate energy?
+      <br>
+      <li>Fade or zoom/animate from the detector view to a view of the final raw image that was built up during the observation with the X-ray spectrum next to it with the elements in the press image identified. </li>
+      <li>Show bands of color applied to the elements in the spectrum, and provide a dragging tool for the user to sweep from low to high energies and back and see the image update with the individual element images. </li>
+      <li> An animation then pulls each element image out from the spectrum and shows them combine to form the final release version of the image. </li>
+    </ul>
 
-The overall idea: follow an X-ray photon from it's creation in a supernova explosion as it travels through space and reaches Chandra's detectors. From there, learn how astronomers create color images through a visualization showing how an X-ray image builds up over the course of an observation, ultimately showing how we use the energy information of the photons to build color images. 
-<br>
-<ul list-style-type="circle">
-<li> Open with an animation of a supernova explosion<br></li>
- - text will explain what's happening when the star explodes, and how it's seeding the surrounding medium with heavier elements. Perhaps add an interactive spectrum filter that allows the user to visualize the explosion in different light.<br>
- - possible hook for interactivity would be to allow the user to control the explosion! (i.e. click here to blow up the star...)<br>
- - more thoughts on this part: could explain the process of core collapse through interactivity. Stars collapse because they use up their fuel and the outward radiation pressure in their core can no longer withstand the inward pull of gravity. They start out burning hydrogen into helium and when the supply of hydrogen runs out, they shrink a bit, and get hotter and start burning heavier elements. The user could click a few times (burning up all the hydrogen) to keep the star from collapsing, click a few more times to burn through other elements until the point where clicking can no longer support the star and it collapses triggering the supernova...then the animation picks up.
-<br>
-<li> Follow a single x-ray photon from the explosion site as it travels through space at the speed of light </li>
- - lots of room here for inserting cool facts about the speed of light, wave-particle duality, relativity<br>
- - some facts about the photon itself - it's energy, element?
-<br>
-<li> The photon encounters Chandra and we watch as it enters the aperture, bounces off of the primary and secondary mirrors and makes its way to the focal plane, striking and registering an x-ray photon in the detector </li>
- -the animation at this point is driven by the user scrolling, if they scroll back up, it plays in reverse, etc.
-<br>
- - at this point we hold on a view looking down at the detector and speed up time and watch as more and more x-ray photons strike the detector and eventually we see an image building up over time (Cas A). <br>
- - This is a very abstracted visualization of the way the telescope detector works so could take some liberties as to how best to visualize this in a concise and clear manner. 
-<br>
- - at the same time, we explain how each photon has an energy associated with it and show how we can make a plot of the number of photons vs energy to show how we can build up an x-ray spectrum from the image. As each photon strikes the detector to build up the image, the plot updates to show another data point. Eventually the plot will be the X-ray spectrum of Cas A. <br>
- - do we plot the spectrum? or just use color to indicate energy? 
-<br>
-<li>Fade or zoom/animate from the detector view to a view of the final raw image that was built up during the observation with the X-ray spectrum next to it with the elements in the press image identified. </li>
-<li>Show bands of color applied to the elements in the spectrum, and provide a dragging tool for the user to sweep from low to high energies and back and see the image update with the individual element images. </li>
-<li> An animation then pulls each element image out from the spectrum and shows them combine to form the final release version of the image.  </li>
-</ul>
+    A tangential educational possibility from this is to allow users to assign their own colors to the elements and make their own composite image.</p>
 
- A tangential educational possibility from this is to allow users to assign their own colors to the elements and make their own composite image.</p>
+  <hr width=75%>
 
-<hr width=75%>
+  <h2>4. Do more with <a href="http://chandra.si.edu/photo/map/index.html">Chandra Sky Map</a>?</h2>
+  - I've wanted to add a multi-wavelength view of the sky similar to <a href="http://chromoscope.net/">Chromoscope</a> for a while.
+  <br> - I also played around with adding interactive constellation boundaries across the sky to this but ran into trouble with boundaries whose edges wrap around to the other side. I still haven't figured that bug out.
+  <br>
+  <hr width=75%>
 
-<h2>4. Do more with <a href="http://chandra.si.edu/photo/map/index.html">Chandra Sky Map</a>?</h2>
-    - I've wanted to add a multi-wavelength view of the sky similar to <a href="http://chromoscope.net/">Chromoscope</a> for a while.<br>
-    - I also played around with adding interactive constellation boundaries across the sky to this but ran into trouble with boundaries whose edges wrap around to the other side. I still haven't figured that bug out. <br>
-<hr width=75%>
+  <h2>5. Fix up and finish <a href="https://smartx.cfa.harvard.edu/svc/joesvc6.html">Smart-X</a> analysis page</h2>
+  This page needs a LOT of help. I'm considering scrapping everything and starting over by first thoroughly thinking through the workflow and how the UI should fit into that.
+  <hr width=75%>
 
-<h2>5. Fix up and finish <a href="https://smartx.cfa.harvard.edu/svc/joesvc6.html">Smart-X</a> analysis page</h2>
-This page needs a LOT of help. I'm considering scrapping everything and starting over by first thoroughly thinking through the workflow and how the UI should fit into that.  
-<hr width=75%>
-
-<h2>6. Interactive data explorer for Chandra data files</h2>
-I envision a way to interactively browse and work with Chandra data files directly in the browser. It's a longer term project with no real timeline on it. 
-<hr>
-<h1>Other Potential Goals</h1>
-Developing new interactive tools for <a href="http://mo-www.cfa.harvard.edu/OWN/index.html">MicroObservatory</a><br>
-    -potentially develop iOS tools for interacting with the sky and choosing objects to observe. <br>
-Learning how to properly scope out and estimate time involved for large projects<br>
+  <h2>6. Interactive data explorer for Chandra data files</h2>
+  I envision a way to interactively browse and work with Chandra data files directly in the browser. It's a longer term project with no real timeline on it.
+  <hr>
+  <h1>Other Potential Goals</h1>
+  Developing new interactive tools for <a href="http://mo-www.cfa.harvard.edu/OWN/index.html">MicroObservatory</a>
+  <br> -potentially develop iOS tools for interacting with the sky and choosing objects to observe.
+  <br> Learning how to properly scope out and estimate time involved for large projects
+  <br>
 
 </body>
+
 </html>
