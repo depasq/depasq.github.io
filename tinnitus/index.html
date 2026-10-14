@@ -1,0 +1,674 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tinnitus Notch Tuner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column. Panel 1 matches the pitch of the ringing, panel 2 plays noise with that pitch cut out, with a live plot of the filter. */
+:root{
+  --bg:#F2F5F3;
+  --surface:#FFFFFF;
+  --fg:#14211F;
+  --muted:#586966;
+  --line:#D5DDDA;
+  --accent:#0B7A75;
+  --accent-fg:#FFFFFF;
+  --notch:#C2490F;
+  --note-bg:#E9EFEC;
+  --font-display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-body:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1514;
+    --surface:#152120;
+    --fg:#E4EEEB;
+    --muted:#95A9A5;
+    --line:#273836;
+    --accent:#3CC3BA;
+    --accent-fg:#06201E;
+    --notch:#FF8A57;
+    --note-bg:#1A2927;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1514;
+  --surface:#152120;
+  --fg:#E4EEEB;
+  --muted:#95A9A5;
+  --line:#273836;
+  --accent:#3CC3BA;
+  --accent-fg:#06201E;
+  --notch:#FF8A57;
+  --note-bg:#1A2927;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.wrap{max-width:680px;margin:0 auto;padding-block:28px 56px;display:grid;gap:18px}
+h1,h2{font-family:var(--font-display);margin:0;text-wrap:balance;letter-spacing:-0.02em;line-height:1.1}
+h1{font-size:clamp(2rem,7vw,2.75rem);font-weight:700}
+h2{font-size:1.4rem;font-weight:650}
+h3{font-size:1rem;margin:0 0 4px;font-weight:650}
+p{margin:0}
+.lede{color:var(--muted);max-width:56ch;margin-top:8px}
+.eyebrow{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+.safety{border:1px solid var(--line);background:var(--note-bg);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.safety p{font-size:.95rem}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:18px;min-width:0}
+.panel-head{display:grid;gap:6px}
+.panel-head p{color:var(--muted);font-size:.95rem;max-width:58ch}
+
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row.between{justify-content:space-between}
+.field{display:grid;gap:6px;min-width:0}
+.field>label,.field>.lbl{font-size:.85rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px}
+.field .val{font-family:var(--font-mono);color:var(--fg);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:28px}
+
+.readout{display:flex;align-items:baseline;gap:.5rem;font-family:var(--font-mono);flex-wrap:wrap}
+.readout .num{font-size:clamp(2.5rem,12vw,3.5rem);font-weight:500;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;line-height:1}
+.readout .unit{color:var(--muted);font-size:1.1rem}
+.note{font-family:var(--font-mono);font-size:.85rem;color:var(--muted)}
+
+.ticks{position:relative;height:1.3em;font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-top:-4px}
+.ticks span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.ticks span:first-child{transform:none}
+.ticks span:last-child{transform:translateX(-100%)}
+
+.btn{
+  font:inherit;font-weight:600;font-size:.95rem;
+  min-height:44px;padding:10px 16px;border-radius:10px;
+  border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;
+}
+.btn:hover{border-color:var(--accent)}
+.btn:focus-visible,.seg input:focus-visible+span,select:focus-visible,input[type=number]:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.primary[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.btn.big{width:100%;min-height:52px;font-size:1.05rem}
+.btn.link{border:0;background:none;color:var(--accent);padding:6px 4px;min-height:0;text-decoration:underline;text-underline-offset:3px}
+.btn.step{min-width:52px;font-family:var(--font-mono)}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;background:var(--bg)}
+.seg label{position:relative;display:block}
+.seg input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.seg span{display:block;padding:8px 14px;border-radius:7px;font-weight:550;font-size:.9rem;color:var(--muted)}
+.seg input:checked+span{background:var(--accent);color:var(--accent-fg)}
+
+input[type=number],select{
+  font:inherit;font-family:var(--font-mono);font-size:.95rem;
+  min-height:44px;padding:8px 10px;border-radius:10px;
+  border:1px solid var(--line);background:var(--bg);color:var(--fg);
+}
+input[type=number]{width:8.5ch;font-variant-numeric:tabular-nums}
+.exact{display:flex;align-items:center;gap:8px;margin-left:auto;color:var(--muted);font-size:.85rem}
+.exact input{width:9ch}
+
+.plot{width:100%;min-width:0}
+.plot canvas{display:block;max-width:100%}
+.cap{font-size:.85rem;color:var(--muted)}
+.cap b{color:var(--fg);font-family:var(--font-mono);font-weight:500}
+.center-line{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;justify-content:space-between}
+.center-line .hz{font-family:var(--font-mono);font-size:1.15rem;font-weight:500;color:var(--notch)}
+.controls{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.status{font-family:var(--font-mono);font-size:.85rem;color:var(--muted);min-height:1.4em;text-align:center}
+.hint{font-size:.8rem;color:var(--muted)}
+.about{display:grid;gap:10px;color:var(--muted);font-size:.92rem;max-width:62ch}
+.about h3{color:var(--fg)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Notch therapy, DIY</div>
+    <h1>Tinnitus Notch Tuner</h1>
+    <p class="lede">Find the pitch of your ringing, then listen to noise with that pitch filtered out. Everything runs on your device and nothing is uploaded.</p>
+  </header>
+
+  <section class="safety" aria-label="Safety">
+    <h3>Before you press play</h3>
+    <p>Turn your device volume down first, then raise it slowly. The sound should be comfortable and sit under your tinnitus, never over it. If your ringing gets louder or anything hurts, stop.</p>
+  </section>
+
+  <section class="panel" id="panel1" aria-labelledby="h-pitch">
+    <div class="panel-head">
+      <div class="eyebrow">Step 1</div>
+      <h2 id="h-pitch">Find your pitch</h2>
+      <p>Use headphones in a quiet room. Phone and laptop speakers can't reproduce high frequencies well. Move the slider until the sound matches your ringing.</p>
+    </div>
+
+    <div class="row between">
+      <div class="seg" role="radiogroup" aria-label="Sound type">
+        <label><input type="radio" name="tonemode" value="sine" checked><span>Pure tone</span></label>
+        <label><input type="radio" name="tonemode" value="hiss"><span>Hiss</span></label>
+      </div>
+      <div class="hint">Pick whichever is closer to what you hear.</div>
+    </div>
+
+    <div>
+      <div class="readout"><span class="num" id="freqNum">6,000</span><span class="unit">Hz</span></div>
+      <div class="note" id="noteName">Nearest note</div>
+    </div>
+
+    <div class="field">
+      <input type="range" id="pitch" min="0" max="1000" step="1" value="500" aria-label="Pitch, 200 to 16,000 hertz">
+      <div class="ticks" aria-hidden="true">
+        <span style="left:0">200</span>
+        <span style="left:36.7%">1k</span>
+        <span style="left:68.4%">4k</span>
+        <span style="left:100%">16k Hz</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn step" id="halve" type="button" aria-label="Halve the pitch">½×</button>
+      <button class="btn step" id="down" type="button" aria-label="Fine adjust down">−</button>
+      <button class="btn step" id="up" type="button" aria-label="Fine adjust up">+</button>
+      <button class="btn step" id="double" type="button" aria-label="Double the pitch">2×</button>
+      <label class="exact" for="freqInput">Exact <input type="number" id="freqInput" min="200" max="16000" step="1" inputmode="numeric"> Hz</label>
+    </div>
+
+    <p class="hint">Octave check: it's easy to match a pitch one octave too high or low. Once you are close, tap ½× and 2× and keep whichever sounds most like your ringing. The − and + buttons nudge the pitch by a small step.</p>
+
+    <div class="controls">
+      <div class="field">
+        <label for="toneVol"><span>Volume</span><span class="val" id="toneVolVal">25%</span></label>
+        <input type="range" id="toneVol" min="0" max="1" step="0.01" value="0.25">
+      </div>
+      <div class="row" style="align-items:end">
+        <button class="btn primary big" id="toneBtn" type="button" aria-pressed="false">Play tone</button>
+      </div>
+    </div>
+
+    <div class="row between">
+      <span class="hint">Happy with the match?</span>
+      <button class="btn" id="usePitch" type="button">Use this pitch</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel2" aria-labelledby="h-noise">
+    <div class="panel-head">
+      <div class="eyebrow">Step 2</div>
+      <h2 id="h-noise">Listen to notched noise</h2>
+      <p>Broadband noise with a band removed around your pitch. Many people play it for 30 to 60 minutes while reading or falling asleep.</p>
+    </div>
+
+    <div class="center-line">
+      <span class="note">Notch centered at <span class="hz" id="centerHz">6,000 Hz</span></span>
+      <button class="btn link" id="changePitch" type="button">Change pitch</button>
+    </div>
+
+    <div>
+      <div class="plot" id="plotBox"><canvas id="spec" role="img" aria-label="Filter response plot"></canvas></div>
+      <p class="cap" id="depthCap">Filter response: how much each frequency is turned down.</p>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label for="width"><span>Notch width</span><span class="val" id="widthVal">1.0 octave</span></label>
+        <input type="range" id="width" min="0.5" max="2" step="0.1" value="1">
+      </div>
+      <div class="field">
+        <span class="lbl">Noise color</span>
+        <div class="seg" role="radiogroup" aria-label="Noise color">
+          <label><input type="radio" name="noise" value="white" checked><span>White</span></label>
+          <label><input type="radio" name="noise" value="pink"><span>Pink</span></label>
+        </div>
+        <span class="hint">Pink is softer, with less treble.</span>
+      </div>
+      <div class="field">
+        <label for="noiseVol"><span>Volume</span><span class="val" id="noiseVolVal">30%</span></label>
+        <input type="range" id="noiseVol" min="0" max="1" step="0.01" value="0.3">
+      </div>
+      <div class="field">
+        <label for="timer"><span>Timer</span></label>
+        <select id="timer">
+          <option value="0">No timer</option>
+          <option value="15">15 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+        </select>
+        <span class="hint">Applies from the next start. Sound fades out over 10 seconds.</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <button class="btn primary big" id="noiseBtn" type="button" aria-pressed="false">Start notched noise</button>
+      <div class="status" id="noiseStatus" aria-live="polite">Stopped</div>
+    </div>
+    <p class="hint">The screen stays awake while the noise plays, because phones often pause web audio when they lock. On an iPhone, make sure the silent switch is off.</p>
+  </section>
+
+  <section class="about">
+    <h3>About this</h3>
+    <p>Notched noise is an experimental approach, and studies so far give mixed results. Treat it as something to try, not as a treatment.</p>
+    <p>Ringing that started after a loud show and is still there months later is worth a visit to an audiologist or ENT. A hearing test is useful background for any of this.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+var FMIN = 200, FMAX = 16000, STORE = 'tinnitus-notch-tuner';
+var NAMES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+function fmtHz(f){ return Math.round(f).toLocaleString('en-US'); }
+
+var state = { freq:6000, width:1, noise:'white', toneMode:'sine', toneVol:0.25, noiseVol:0.3, timer:0 };
+try {
+  var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+  if (saved && typeof saved === 'object') {
+    if (isFinite(saved.freq)) state.freq = clamp(Math.round(+saved.freq), FMIN, FMAX);
+    if (isFinite(saved.width)) state.width = clamp(+saved.width, 0.5, 2);
+    if (saved.noise === 'white' || saved.noise === 'pink') state.noise = saved.noise;
+    if (saved.toneMode === 'sine' || saved.toneMode === 'hiss') state.toneMode = saved.toneMode;
+    if (isFinite(saved.toneVol)) state.toneVol = clamp(+saved.toneVol, 0, 1);
+    if (isFinite(saved.noiseVol)) state.noiseVol = clamp(+saved.noiseVol, 0, 1);
+    if ([0,15,30,60,120].indexOf(+saved.timer) >= 0) state.timer = +saved.timer;
+  }
+} catch(e) {}
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(state)); } catch(e) {} }
+
+/* ---------- filter design ---------- */
+// A 12th-order Butterworth low-pass below the notch plus a 12th-order high-pass above it,
+// summed in parallel. That is a band-stop with -3 dB edges at the chosen width and steep sides.
+var ORDER = 12, QS = [];
+for (var k = 1; k <= ORDER/2; k++) QS.push(1/(2*Math.sin((2*k-1)*Math.PI/(2*ORDER))));
+function qDb(q){ return 20*Math.log10(q); } // WebAudio low/high-pass Q is expressed in dB
+
+function edges(f0, w, sr){
+  var lo = Math.max(20, f0/Math.pow(2, w/2));
+  var hi = Math.min(f0*Math.pow(2, w/2), sr/2*0.97);
+  return [lo, hi];
+}
+function buildNotch(c, input, output){
+  var lp = [], hp = [], a = input, b = input;
+  QS.forEach(function(q){
+    var l = c.createBiquadFilter(); l.type = 'lowpass'; l.Q.value = qDb(q); a.connect(l); a = l; lp.push(l);
+    var h = c.createBiquadFilter(); h.type = 'highpass'; h.Q.value = qDb(q); b.connect(h); b = h; hp.push(h);
+  });
+  a.connect(output); b.connect(output);
+  return { lp:lp, hp:hp };
+}
+function applyChain(chain, f0, w, sr, c){
+  var e = edges(f0, w, sr), t = c ? c.currentTime : 0;
+  chain.lp.forEach(function(n){ if (c) n.frequency.setTargetAtTime(e[0], t, 0.04); else n.frequency.value = e[0]; });
+  chain.hp.forEach(function(n){ if (c) n.frequency.setTargetAtTime(e[1], t, 0.04); else n.frequency.value = e[1]; });
+}
+
+/* ---------- audio engine ---------- */
+var ctx = null, noiseBufs = {}, tone = null, noise = null, wakeLock = null, tick = null;
+
+function ensureCtx(){
+  if (!ctx) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e) {}
+  }
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+function getNoise(type){
+  if (noiseBufs[type]) return noiseBufs[type];
+  var len = Math.floor(ctx.sampleRate*6), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0), i, w;
+  if (type === 'white') {
+    for (i = 0; i < len; i++) d[i] = Math.random()*2-1;
+  } else {
+    var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for (i = 0; i < len; i++) {
+      w = Math.random()*2-1;
+      b0 = 0.99886*b0 + w*0.0555179; b1 = 0.99332*b1 + w*0.0750759;
+      b2 = 0.96900*b2 + w*0.1538520; b3 = 0.86650*b3 + w*0.3104856;
+      b4 = 0.55000*b4 + w*0.5329522; b5 = -0.7616*b5 - w*0.0168980;
+      d[i] = b0+b1+b2+b3+b4+b5+b6 + w*0.5362; b6 = w*0.115926;
+    }
+  }
+  var s = 0; for (i = 0; i < len; i++) s += d[i]*d[i];
+  var k2 = 0.2/Math.sqrt(s/len);
+  for (i = 0; i < len; i++) d[i] *= k2; // both colors share the same loudness
+  noiseBufs[type] = buf;
+  return buf;
+}
+function toneGain(v){ return 0.12*v*v; }
+function noiseGain(v){ return 0.5*v*v; }
+function hissComp(f){
+  var bw = f/8;
+  return 0.707/(0.2*Math.sqrt(bw/(ctx.sampleRate/2)));
+}
+function setGain(param, v){
+  var t = ctx.currentTime;
+  try {
+    param.cancelScheduledValues(t);
+    param.setValueAtTime(param.value, t);
+    param.setTargetAtTime(v, t, 0.05);
+  } catch(e) { param.value = v; }
+}
+
+function startTone(){
+  stopNoise();
+  var c = ensureCtx();
+  stopTone();
+  var g = c.createGain(); g.gain.value = 0; g.connect(c.destination);
+  var src, bp = null, comp = null;
+  if (state.toneMode === 'sine') {
+    src = c.createOscillator(); src.type = 'sine'; src.frequency.value = state.freq; src.connect(g);
+  } else {
+    src = c.createBufferSource(); src.buffer = getNoise('white'); src.loop = true;
+    bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = state.freq; bp.Q.value = 8;
+    comp = c.createGain(); comp.gain.value = hissComp(state.freq);
+    src.connect(bp); bp.connect(comp); comp.connect(g);
+  }
+  var t = c.currentTime;
+  src.start();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(toneGain(state.toneVol), t+0.3);
+  tone = { src:src, g:g, bp:bp, comp:comp };
+  render();
+}
+function stopTone(){
+  if (!tone) return;
+  var t = ctx.currentTime, g = tone.g, src = tone.src;
+  try {
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(g.gain.value, t);
+    g.gain.linearRampToValueAtTime(0, t+0.15);
+    src.stop(t+0.2);
+  } catch(e) {}
+  setTimeout(function(){ try { g.disconnect(); } catch(e) {} }, 400);
+  tone = null;
+  render();
+}
+
+function startNoise(){
+  stopTone();
+  var c = ensureCtx();
+  stopNoise();
+  var src = c.createBufferSource(); src.buffer = getNoise(state.noise); src.loop = true;
+  var out = c.createGain(); out.gain.value = 0;
+  var fade = c.createGain(); fade.gain.value = 1;
+  var chain = buildNotch(c, src, out);
+  out.connect(fade); fade.connect(c.destination);
+  applyChain(chain, state.freq, state.width, c.sampleRate, null);
+  var t = c.currentTime, endAt = 0;
+  out.gain.setValueAtTime(0, t);
+  out.gain.linearRampToValueAtTime(noiseGain(state.noiseVol), t+1.5);
+  src.start();
+  if (state.timer > 0) {
+    var secs = state.timer*60;
+    fade.gain.setValueAtTime(1, t+secs-10);
+    fade.gain.linearRampToValueAtTime(0, t+secs);
+    src.stop(t+secs+0.05);
+    endAt = Date.now() + secs*1000;
+  }
+  var obj = { src:src, out:out, fade:fade, chain:chain, endAt:endAt };
+  src.onended = function(){ if (noise === obj) finishNoise(); };
+  noise = obj;
+  lockScreen();
+  clearInterval(tick);
+  tick = setInterval(render, 1000);
+  render();
+}
+function stopNoise(){
+  if (!noise) return;
+  var t = ctx.currentTime, n = noise;
+  try {
+    n.out.gain.cancelScheduledValues(t);
+    n.out.gain.setValueAtTime(n.out.gain.value, t);
+    n.out.gain.linearRampToValueAtTime(0, t+0.6);
+    n.src.stop(t+0.7);
+  } catch(e) {}
+  setTimeout(function(){ try { n.fade.disconnect(); } catch(e) {} }, 1000);
+  finishNoise();
+}
+function finishNoise(){
+  noise = null;
+  clearInterval(tick); tick = null;
+  unlockScreen();
+  render();
+}
+function lockScreen(){
+  try {
+    if ('wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then(function(l){ wakeLock = l; }, function(){});
+    }
+  } catch(e) {}
+}
+function unlockScreen(){
+  try { if (wakeLock) wakeLock.release(); } catch(e) {}
+  wakeLock = null;
+}
+document.addEventListener('visibilitychange', function(){ if (!document.hidden && noise) lockScreen(); });
+
+function liveUpdate(){
+  if (!ctx) return;
+  var t = ctx.currentTime;
+  if (tone) {
+    var f = state.freq;
+    if (tone.src.frequency) tone.src.frequency.setTargetAtTime(f, t, 0.03);
+    if (tone.bp) { tone.bp.frequency.setTargetAtTime(f, t, 0.03); tone.comp.gain.setTargetAtTime(hissComp(f), t, 0.03); }
+  }
+  if (noise) applyChain(noise.chain, state.freq, state.width, ctx.sampleRate, ctx);
+}
+
+/* ---------- UI state ---------- */
+function mmss(ms){
+  var s = Math.max(0, Math.ceil(ms/1000)), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), r = s%60;
+  var two = function(n){ return (n < 10 ? '0' : '') + n; };
+  return (h ? h + ':' + two(m) : m) + ':' + two(r);
+}
+function render(){
+  var tOn = !!tone, nOn = !!noise;
+  $('toneBtn').textContent = tOn ? 'Stop tone' : 'Play tone';
+  $('toneBtn').setAttribute('aria-pressed', tOn);
+  $('noiseBtn').textContent = nOn ? 'Stop' : 'Start notched noise';
+  $('noiseBtn').setAttribute('aria-pressed', nOn);
+  var s = 'Stopped';
+  if (nOn) s = noise.endAt ? 'Playing, stops in ' + mmss(noise.endAt - Date.now()) : 'Playing';
+  $('noiseStatus').textContent = s;
+}
+
+function noteLabel(f){
+  var n = 12*Math.log2(f/440)+69, r = Math.round(n), cents = Math.round((n-r)*100);
+  var name = NAMES[((r%12)+12)%12] + (Math.floor(r/12)-1);
+  return 'Nearest note ' + name + ' (' + (cents >= 0 ? '+' : '−') + Math.abs(cents) + '¢)';
+}
+function freqToSlider(f){ return 1000*Math.log(f/FMIN)/Math.log(FMAX/FMIN); }
+function sliderToFreq(v){ return FMIN*Math.pow(FMAX/FMIN, v/1000); }
+
+function setFreq(f, from){
+  f = clamp(Math.round(f), FMIN, FMAX);
+  state.freq = f;
+  if (from !== 'slider') $('pitch').value = freqToSlider(f);
+  if (from !== 'input') $('freqInput').value = f;
+  $('freqNum').textContent = fmtHz(f);
+  $('noteName').textContent = noteLabel(f);
+  $('centerHz').textContent = fmtHz(f) + ' Hz';
+  liveUpdate(); drawSpectrum(); save();
+}
+function setWidth(w){
+  state.width = clamp(+w, 0.5, 2);
+  $('widthVal').textContent = state.width.toFixed(1) + ' octave' + (state.width === 1 ? '' : 's');
+  liveUpdate(); drawSpectrum(); save();
+}
+
+/* ---------- response plot ---------- */
+var dctx = null, dchain = null;
+var PTS = 280, F = new Float32Array(PTS), magBuf = new Float32Array(PTS), phaBuf = new Float32Array(PTS);
+for (var i = 0; i < PTS; i++) F[i] = 20*Math.pow(1000, i/(PTS-1));
+try {
+  dctx = new OfflineAudioContext(1, 1, 44100);
+  dchain = buildNotch(dctx, dctx.createGain(), dctx.createGain());
+} catch(e) { dctx = null; }
+
+function chainResponse(nodes){
+  var mag = new Float32Array(PTS).fill(1), pha = new Float32Array(PTS);
+  nodes.forEach(function(n){
+    n.getFrequencyResponse(F, magBuf, phaBuf);
+    for (var j = 0; j < PTS; j++) { mag[j] *= magBuf[j]; pha[j] += phaBuf[j]; }
+  });
+  return [mag, pha];
+}
+function response(){
+  applyChain(dchain, state.freq, state.width, 44100, null);
+  var a = chainResponse(dchain.lp), b = chainResponse(dchain.hp), out = new Float32Array(PTS);
+  for (var j = 0; j < PTS; j++) {
+    var re = a[0][j]*Math.cos(a[1][j]) + b[0][j]*Math.cos(b[1][j]);
+    var im = a[0][j]*Math.sin(a[1][j]) + b[0][j]*Math.sin(b[1][j]);
+    out[j] = 20*Math.log10(Math.max(Math.hypot(re, im), 1e-5));
+  }
+  return out;
+}
+
+function drawSpectrum(){
+  var cv = $('spec');
+  if (!cv || !dctx) return;
+  var w = $('plotBox').clientWidth, h = 190;
+  if (!w) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 3);
+  cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+  cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  var g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  var cs = getComputedStyle(document.documentElement);
+  var col = function(n){ return cs.getPropertyValue(n).trim(); };
+  var cAccent = col('--accent'), cNotch = col('--notch'), cMuted = col('--muted'), cLine = col('--line'), cFg = col('--fg');
+  var mono = col('--font-mono') || 'monospace';
+
+  var L = 40, R = w-12, T = 28, B = h-26, DB = 40;
+  var xOf = function(f){ return L + (R-L)*Math.log(f/20)/Math.log(1000); };
+  var yOf = function(db){ return T + (B-T)*clamp(-db, 0, DB)/DB; };
+
+  g.font = '11px ' + mono;
+  g.textBaseline = 'middle';
+  g.lineWidth = 1;
+
+  // dB grid
+  g.textAlign = 'right';
+  [0,-10,-20,-30,-40].forEach(function(db){
+    var y = Math.round(yOf(db)) + 0.5;
+    g.strokeStyle = cLine; g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke();
+    g.fillStyle = cMuted; g.fillText(db === 0 ? '0 dB' : String(db).replace('-', '−'), L-6, y);
+  });
+  // frequency grid
+  g.textAlign = 'center';
+  [[100,'100 Hz'],[1000,'1 kHz'],[10000,'10 kHz']].forEach(function(p){
+    var x = Math.round(xOf(p[0])) + 0.5;
+    g.strokeStyle = cLine; g.beginPath(); g.moveTo(x, T); g.lineTo(x, B); g.stroke();
+    g.fillStyle = cMuted; g.fillText(p[1], clamp(x, L+18, R-18), B+14);
+  });
+
+  var e = edges(state.freq, state.width, 44100);
+  // notch band shading
+  g.globalAlpha = 0.12; g.fillStyle = cNotch;
+  g.fillRect(xOf(e[0]), T, xOf(e[1]) - xOf(e[0]), B-T);
+  g.globalAlpha = 1;
+
+  var r = response();
+  g.beginPath();
+  for (var j = 0; j < PTS; j++) {
+    var x = xOf(F[j]), y = yOf(r[j]);
+    if (j === 0) g.moveTo(x, y); else g.lineTo(x, y);
+  }
+  g.lineJoin = 'round'; g.lineWidth = 2; g.strokeStyle = cAccent; g.stroke();
+  g.lineTo(R, B); g.lineTo(L, B); g.closePath();
+  g.globalAlpha = 0.2; g.fillStyle = cAccent; g.fill(); g.globalAlpha = 1;
+
+  // center marker and label
+  var cx = xOf(state.freq);
+  g.setLineDash([4,3]); g.lineWidth = 1.5; g.strokeStyle = cNotch;
+  g.beginPath(); g.moveTo(cx, T-6); g.lineTo(cx, B); g.stroke(); g.setLineDash([]);
+  var label = fmtHz(state.freq) + ' Hz';
+  g.font = '500 12px ' + mono; g.textAlign = 'center'; g.fillStyle = cNotch;
+  g.fillText(label, clamp(cx, L+30, R-30), 11);
+
+  var idx = Math.round((PTS-1)*Math.log(state.freq/20)/Math.log(1000));
+  var depth = Math.round(-r[idx]);
+  var txt = depth >= 50 ? 'more than 50 dB' : 'about ' + depth + ' dB';
+  $('depthCap').innerHTML = 'Filter response: the noise is turned down by <b>' + txt + '</b> at ' + fmtHz(state.freq) + ' Hz and is untouched outside the shaded band.';
+  cv.setAttribute('aria-label', 'Filter response plot. Noise is reduced by ' + txt + ' at ' + fmtHz(state.freq) + ' hertz, across a band ' + state.width.toFixed(1) + ' octaves wide.');
+}
+
+/* ---------- wiring ---------- */
+$('pitch').addEventListener('input', function(){ setFreq(sliderToFreq(+this.value), 'slider'); });
+$('freqInput').addEventListener('change', function(){
+  var v = parseFloat(this.value);
+  if (isFinite(v)) setFreq(v, 'input'); else this.value = state.freq;
+  this.value = state.freq;
+});
+$('halve').addEventListener('click', function(){ setFreq(state.freq/2); });
+$('double').addEventListener('click', function(){ setFreq(state.freq*2); });
+$('down').addEventListener('click', function(){ setFreq(state.freq*Math.pow(2, -1/48)); });
+$('up').addEventListener('click', function(){ setFreq(state.freq*Math.pow(2, 1/48)); });
+
+$('toneBtn').addEventListener('click', function(){ if (tone) stopTone(); else startTone(); });
+$('noiseBtn').addEventListener('click', function(){ if (noise) stopNoise(); else startNoise(); });
+
+document.querySelectorAll('input[name=tonemode]').forEach(function(el){
+  el.addEventListener('change', function(){
+    state.toneMode = this.value; save();
+    if (tone) startTone();
+  });
+});
+document.querySelectorAll('input[name=noise]').forEach(function(el){
+  el.addEventListener('change', function(){
+    state.noise = this.value; save();
+    if (noise) startNoise();
+  });
+});
+$('toneVol').addEventListener('input', function(){
+  state.toneVol = +this.value;
+  $('toneVolVal').textContent = Math.round(state.toneVol*100) + '%';
+  if (tone) setGain(tone.g.gain, toneGain(state.toneVol));
+  save();
+});
+$('noiseVol').addEventListener('input', function(){
+  state.noiseVol = +this.value;
+  $('noiseVolVal').textContent = Math.round(state.noiseVol*100) + '%';
+  if (noise) setGain(noise.out.gain, noiseGain(state.noiseVol));
+  save();
+});
+$('width').addEventListener('input', function(){ setWidth(this.value); });
+$('timer').addEventListener('change', function(){ state.timer = +this.value; save(); });
+
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function scrollToEl(id){ $(id).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'start' }); }
+$('usePitch').addEventListener('click', function(){ stopTone(); scrollToEl('panel2'); });
+$('changePitch').addEventListener('click', function(){ scrollToEl('panel1'); });
+
+// redraw on resize and theme changes
+if (window.ResizeObserver) new ResizeObserver(function(){ drawSpectrum(); }).observe($('plotBox'));
+else window.addEventListener('resize', drawSpectrum);
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawSpectrum); } catch(e) {}
+new MutationObserver(drawSpectrum).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawSpectrum);
+
+/* ---------- init ---------- */
+document.querySelector('input[name=tonemode][value=' + state.toneMode + ']').checked = true;
+document.querySelector('input[name=noise][value=' + state.noise + ']').checked = true;
+$('toneVol').value = state.toneVol; $('toneVolVal').textContent = Math.round(state.toneVol*100) + '%';
+$('noiseVol').value = state.noiseVol; $('noiseVolVal').textContent = Math.round(state.noiseVol*100) + '%';
+$('width').value = state.width;
+$('timer').value = String(state.timer);
+setWidth(state.width);
+setFreq(state.freq);
+render();
+})();
+</script>
+
+</body></html>
